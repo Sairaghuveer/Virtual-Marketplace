@@ -1,4 +1,4 @@
-package valid;
+package Validate;
 
 import java.io.IOException;
 
@@ -21,20 +21,23 @@ public class LoginTest extends HttpServlet {
 		// TODO Auto-generated method stub
 		String User_Name= request.getParameter("User_Name");
 		String User_Pass= request.getParameter("User_Pass");
-		
-		if(lov.check(User_Name, User_Pass)==true) {
+		if (request.getParameter("Submit")!=null) {
+				if(lov.check(User_Name, User_Pass)==true) {
 			ForUserID Id= duid.getInfo(User_Name);
 			HttpSession session = request.getSession();
 			session.setAttribute("UserID", Id.User_ID);
 			//request.getRequestDispatcher("Postlisting").forward(request, response);
 			request.getRequestDispatcher("UserResponse.jsp").forward(request, response); 
 		}
-		else {
+				else {
 			
 			response.sendRedirect("index.jsp");
 		}
 		
-		
+		}
+		else {
+			response.sendRedirect("index.jsp");
+		}
 			}
 
 }
