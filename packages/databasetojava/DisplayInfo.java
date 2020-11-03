@@ -43,21 +43,18 @@ public class DisplayInfo {
 	public void setItem_Condition_ID(int item_Condition_ID) {
 		Item_Condition_ID = item_Condition_ID;
 	}
-
-@Override
-	
-	
-public String toString() {
+//	@Override
+//public String toString() {
 		
 		
 		
 		
 		
-	return "[Prod_Name=" + Prod_Name + ", Prod_Description=" + Prod_Description + ", Prod_Price="
-			+ Prod_Price + ", Category_Name=" + Category_Name + ", Loc_ID=" + Loc_ID + ", Item_Condition_ID="
-	+ Item_Condition_ID + "]";
-	}
-	
+	//	return "[Prod_Name=" + Prod_Name + ", Prod_Description=" + Prod_Description + ", Prod_Price="
+		//		+ Prod_Price + ", Category_Name=" + Category_Name + ", Loc_ID=" + Loc_ID + ", Item_Condition_ID="
+			//	+ Item_Condition_ID + "]";
+//	}
+//	
 	
 
 }
