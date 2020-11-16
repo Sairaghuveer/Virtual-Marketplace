@@ -21,7 +21,48 @@ CREATE TABLE `users` (
    PRIMARY KEY (`User_ID`),
    UNIQUE KEY `User_Name` (`User_Name`),
    UNIQUE KEY `Phone_Number` (`Phone_Number`)
- ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+ 
+ INSERT INTO users VALUES(1,'root','superuser111','root','root','null','raghu991k@gmail.com',2222222222,current_timestamp(),1),
+						(2,'Admin','Admin111','Admin','Admin','null','surya.munuganti@gmail.com',1111111111,current_timestamp(),1);
+ 
+  /*A location table to store the location ID's, name and codes where ID is used to uniquely idnetify the locatioon, and codes can also be used for that as it is unique*/
+ 
+ CREATE TABLE `location` (
+   `Loc_ID` int NOT NULL,
+   `Loc_Name` varchar(20) NOT NULL,
+   `Loc_Code` varchar(5) DEFAULT NULL,
+   PRIMARY KEY (`Loc_ID`),
+   UNIQUE KEY `Loc_Code` (`Loc_Code`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+ 
+ INSERT INTO location VALUES (1, 'Montreal', 'mtl'),
+							(2, 'Laval','lav');
+ /*To specify the item condition which is helpful for the customers to filter products based on their needs*/
+ 
+ CREATE TABLE `item_condition_type` (
+   `Item_Condition_ID` int NOT NULL,
+   `Item_Condition_Type` varchar(20) NOT NULL,
+   PRIMARY KEY (`Item_Condition_ID`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+ 
+ INSERT INTO item_condition_type VALUES (1, 'New'),
+										(2, 'Used');
+ 
+  /*A category table to store the different categories in the table*/
+ 
+ CREATE TABLE `category` (
+   `Category_ID` int NOT NULL,
+   `Category_Name` varchar(30) NOT NULL,
+   PRIMARY KEY (`Category_ID`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+ 
+ INSERT INTO category VALUES(1,'automobiles bikes'),
+							(2,'electronics'),
+							(3,'real estate'),
+							(4,'furniture'),
+							(5,'books'),
+							(6,'others');
  
  /*A table to store all the ads posted by a seller which is a pool of ads available where user ID indicated the ID of the seller
 Availability defines whether the product is available or sold out, and Upd_Del field specifies if there were any updations or deltions performed
@@ -34,7 +75,7 @@ and image path specifies the path of the image stored in the directory*/
    `Prod_Price` int NOT NULL,
    `Loc_ID` int DEFAULT NULL,
    `Category_Name` varchar(30) NOT NULL,
-   `Sub_Category_Name` varchar(30) NOT NULL,
+   `Sub_Category_Name` varchar(30),
    `User_ID` int DEFAULT NULL,
    `Item_Condition_ID` int DEFAULT NULL,
    `Posted_Timestamp` datetime DEFAULT CURRENT_TIMESTAMP,
@@ -48,25 +89,7 @@ and image path specifies the path of the image stored in the directory*/
    CONSTRAINT `ads_posted_ibfk_1` FOREIGN KEY (`User_ID`) REFERENCES `users` (`User_ID`),
    CONSTRAINT `ads_posted_ibfk_2` FOREIGN KEY (`Item_Condition_ID`) REFERENCES `item_condition_type` (`Item_Condition_ID`),
    CONSTRAINT `ads_posted_ibfk_3` FOREIGN KEY (`Loc_ID`) REFERENCES `location` (`Loc_ID`)
- ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
- 
- /*A location table to store the location ID's, name and codes where ID is used to uniquely idnetify the locatioon, and codes can also be used for that as it is unique*/
- 
- CREATE TABLE `location` (
-   `Loc_ID` int NOT NULL,
-   `Loc_Name` varchar(20) NOT NULL,
-   `Loc_Code` varchar(5) DEFAULT NULL,
-   PRIMARY KEY (`Loc_ID`),
-   UNIQUE KEY `Loc_Code` (`Loc_Code`)
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
- 
- /*To specify the item condition which is helpful for the customers to filter products based on their needs*/
- 
- CREATE TABLE `item_condition_type` (
-   `Item_Condition_ID` int NOT NULL,
-   `Item_Condition_Type` varchar(20) NOT NULL,
-   PRIMARY KEY (`Item_Condition_ID`)
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
  
  /*A table to store all the messages between the potential buyer and seller starting with message ID 101*/
  
@@ -85,7 +108,7 @@ and image path specifies the path of the image stored in the directory*/
    CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`Buyer_ID`) REFERENCES `users` (`User_ID`),
    CONSTRAINT `messages_ibfk_2` FOREIGN KEY (`Prod_ID`) REFERENCES `ads_posted` (`Prod_ID`),
    CONSTRAINT `messages_ibfk_3` FOREIGN KEY (`Seller_ID`) REFERENCES `users` (`User_ID`)
- ) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
  
  /* A user searcgh table which specifies the search done by users in the application*/
  
@@ -98,15 +121,7 @@ and image path specifies the path of the image stored in the directory*/
    PRIMARY KEY (`Search_ID`),
    KEY `Category_ID` (`Category_ID`),
    CONSTRAINT `user_search_ibfk_1` FOREIGN KEY (`Category_ID`) REFERENCES `category` (`Category_ID`)
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
- 
- /*A category table to store the different categories in the table*/
- 
- CREATE TABLE `category` (
-   `Category_ID` int NOT NULL,
-   `Category_Name` varchar(30) NOT NULL,
-   PRIMARY KEY (`Category_ID`)
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
  
  CREATE TABLE `automobile_bikes` (
    `Prod_ID` int NOT NULL,
@@ -121,7 +136,7 @@ and image path specifies the path of the image stored in the directory*/
    KEY `Category_ID` (`Category_ID`),
    CONSTRAINT `automobile_bikes_ibfk_1` FOREIGN KEY (`Prod_ID`) REFERENCES `ads_posted` (`Prod_ID`),
    CONSTRAINT `automobile_bikes_ibfk_2` FOREIGN KEY (`Category_ID`) REFERENCES `category` (`Category_ID`)
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
  
  CREATE TABLE `electronics` (
    `Prod_ID` int NOT NULL,
@@ -136,7 +151,7 @@ and image path specifies the path of the image stored in the directory*/
    KEY `Category_ID` (`Category_ID`),
    CONSTRAINT `electronics_ibfk_1` FOREIGN KEY (`Prod_ID`) REFERENCES `ads_posted` (`Prod_ID`),
    CONSTRAINT `electronics_ibfk_2` FOREIGN KEY (`Category_ID`) REFERENCES `category` (`Category_ID`)
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
  
  CREATE TABLE `furniture` (
    `Prod_ID` int NOT NULL,
@@ -150,7 +165,7 @@ and image path specifies the path of the image stored in the directory*/
    KEY `Category_ID` (`Category_ID`),
    CONSTRAINT `furniture_ibfk_1` FOREIGN KEY (`Prod_ID`) REFERENCES `ads_posted` (`Prod_ID`),
    CONSTRAINT `furniture_ibfk_2` FOREIGN KEY (`Category_ID`) REFERENCES `category` (`Category_ID`)
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
  
  CREATE TABLE `real_estate` (
    `Prod_ID` int NOT NULL,
@@ -162,7 +177,7 @@ and image path specifies the path of the image stored in the directory*/
    KEY `Category_ID` (`Category_ID`),
    CONSTRAINT `real_estate_ibfk_1` FOREIGN KEY (`Prod_ID`) REFERENCES `ads_posted` (`Prod_ID`),
    CONSTRAINT `real_estate_ibfk_2` FOREIGN KEY (`Category_ID`) REFERENCES `category` (`Category_ID`)
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
  
  CREATE TABLE `books` (
    `Prod_ID` int NOT NULL,
@@ -175,4 +190,4 @@ and image path specifies the path of the image stored in the directory*/
    KEY `Category_ID` (`Category_ID`),
    CONSTRAINT `books_ibfk_1` FOREIGN KEY (`Prod_ID`) REFERENCES `ads_posted` (`Prod_ID`),
    CONSTRAINT `books_ibfk_2` FOREIGN KEY (`Category_ID`) REFERENCES `category` (`Category_ID`)
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
