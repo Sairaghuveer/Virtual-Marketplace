@@ -191,3 +191,8 @@ and image path specifies the path of the image stored in the directory*/
    CONSTRAINT `books_ibfk_1` FOREIGN KEY (`Prod_ID`) REFERENCES `ads_posted` (`Prod_ID`),
    CONSTRAINT `books_ibfk_2` FOREIGN KEY (`Category_ID`) REFERENCES `category` (`Category_ID`)
  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+ 
+Alter table ads_posted drop foreign key `ads_posted_ibfk_1`, Add foreign key `ads_posted_ibfk_1` (`User_ID`) references `users` (`User_ID`) ON delete cascade on update cascade;
+
+Alter table messages drop foreign key `messages_ibfk_2`, Add foreign key `messages_ibfk_2` (`Prod_ID`) references `ads_posted` (`Prod_ID`) ON delete cascade on update cascade;
+ 
