@@ -1,0 +1,70 @@
+ package message;
+
+public class MessageBeanBS {
+
+	public String buyer_MSG;
+	public int prod_ID;
+	public String seller_MSG;
+	public int message_ID;
+	public int getmessage_ID() {
+		return message_ID;
+	}
+
+
+
+	public void setmessage_ID(int message_ID) {
+		this.message_ID = message_ID;
+	}
+
+
+
+	public MessageBeanBS(String buyer_MSG, String seller_MSG, int prod_ID,int message_ID) {
+		super();
+		this.buyer_MSG = buyer_MSG;
+		this.seller_MSG = seller_MSG;
+		this.prod_ID = prod_ID;
+		this.message_ID = message_ID;
+	}
+
+
+
+	public int getprod_ID() {
+		return prod_ID;
+	}
+
+
+
+	public void setprod_ID(int prod_ID) {
+		this.prod_ID = prod_ID;
+	}
+
+
+
+	public String getbuyer_MSG() {
+		return buyer_MSG;
+	}
+
+
+
+	public void setbuyer_MSG(String buyer_MSG) {
+		this.buyer_MSG = buyer_MSG;
+	}
+
+
+
+	public String getseller_MSG() {
+		return seller_MSG;
+	}
+
+
+
+	public void setseller_MSG(String seller_MSG) {
+		this.seller_MSG = seller_MSG;
+	}
+}
+
+
+
+
+
+	
