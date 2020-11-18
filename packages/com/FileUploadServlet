@@ -1,0 +1,168 @@
+package com.raghu;
+import PostAd.DatabaseConnection;
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import java.sql.*;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
+//import javax.servlet.RequestDispatcher;
+
+@WebServlet("/FileUploadServlet")
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
+		maxFileSize = 1024 * 1024 * 10, // 10 MB
+		maxRequestSize = 1024 * 1024 * 50) // 50 MB
+public class FileUploadServlet extends HttpServlet {
+
+	private static final long serialVersionUID = 1L;
+
+	private static final String SAVE_DIR = "images";
+
+	PrintWriter out;
+	ServletOutputStream os;
+
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// response.setContentType("text/html;charset=UTF-8");
+		// os = response.getOutputStream();
+		String uploadPath = request.getServletContext().getRealPath("/") + SAVE_DIR;
+		System.out.println(uploadPath);
+		//String uploadPath =	"C:\\Users\\Raghu\\Downloads\\apache-tomcat-8.5.59\\apache-tomcat-8.5.59\\webapps" + File.separator + SAVE_DIR;
+		Part part = request.getPart("file");
+		String fileName = extractFileName(part);
+
+//		String path = uploadPath + File.separator + fileName;
+//		File dir = new File(path);
+//		if (!dir.exists()) {
+//			dir.mkdirs();
+//		}
+//		part.write(path + File.separator + fileName);
+
+		/*
+		 * for (Part part : request.getParts()) { String fileName =
+		 * extractFileName(part); fileName = new File(fileName).getName();
+		 * part.write(uploadPath + File.separator + fileName); //String fileName =
+		 * part.getSubmittedFileName(); String path = uploadPath + File.separator +
+		 * fileName; InputStream is = part.getInputStream(); Files.copy(is,
+		 * Paths.get(uploadPath + File.separator + fileName),
+		 * StandardCopyOption.REPLACE_EXISTING); }
+		 */
+		// String fileName = part.getSubmittedFileName();
+		// String path = uploadPath + File.separator + fileName;
+		// InputStream is = part.getInputStream();
+		// Files.copy(is, Paths.get(uploadPath + File.separator + fileName),
+		// StandardCopyOption.REPLACE_EXISTING);
+
+		try {
+			Connection conn = DatabaseConnection.initializeDatabase();
+			System.out.println("connection done");
+			HttpSession session = request.getSession();
+			int UserIDinfo = (int) session.getAttribute("UserID");
+
+			String qry = "SELECT COUNT(*) FROM virtualmart.ads_posted WHERE User_ID = ?";
+			PreparedStatement stmnt = conn.prepareStatement(qry);
+			stmnt.setInt(1, UserIDinfo);
+			ResultSet rs = stmnt.executeQuery();
+			int posted_ads = 0;
+			rs.next();
+			posted_ads = rs.getInt(1);
+			int new_ad = posted_ads + 1;
+			String folderName = String.valueOf(UserIDinfo) + "_" + String.valueOf(new_ad);
+			System.out.println(folderName);
+			String path = uploadPath + File.separator + folderName;
+			System.out.println("my output");
+			System.out.println(uploadPath);
+			System.out.println(File.separator);
+			System.out.println("folderName is:"+folderName);
+			File dir = new File(path);
+			if (!dir.exists()) {
+				dir.mkdirs();
+			}
+			part.write(path + File.separator + fileName);
+			System.out.println("filename is:"+fileName);
+			String Img = folderName + File.separator + fileName;
+
+			String query = "INSERT INTO virtualmart.ads_posted(Prod_Name, Prod_Description, Prod_Price, Category_Name, Loc_ID, Item_Condition_ID, User_ID, image_path) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+			PreparedStatement stmnt2 = conn.prepareStatement(query);
+			stmnt2.setString(1, request.getParameter("Prod_Name"));
+			stmnt2.setString(2, request.getParameter("Prod_Description"));
+			stmnt2.setString(3, request.getParameter("Prod_Price"));
+			stmnt2.setString(4, request.getParameter("Category_Name"));
+			String checkLoc = request.getParameter("Loc_ID");
+			String checkItem = request.getParameter("Item_Condition_ID");
+			if (checkLoc.equals("Montreal")) {
+				int loc = 1;
+				stmnt2.setInt(5, loc);
+			} else {
+				int loc = 2;
+				stmnt2.setInt(5, loc);
+			}
+			if (checkItem.equals("New")) {
+				int Item = 1;
+				stmnt2.setInt(6, Item);
+			} else {
+				int Item = 2;
+				stmnt2.setInt(6, Item);
+			}
+			stmnt2.setInt(7, UserIDinfo);
+			stmnt2.setString(8, Img);
+
+			// stmnt.setInt(7,Integer.valueOf(request.getParameter("Phone_Number")));
+			// to make changes in database
+			stmnt2.executeUpdate();
+			request.setAttribute("message", "Upload has been done successfully!");
+			// getServletContext().getRequestDispatcher("").forward(request, response);
+
+			// Close all the connections
+			stmnt.close();
+			stmnt2.close();
+			conn.close();
+
+			// HttpSession session = request.getSession();
+			session.setAttribute("Prod_Name", request.getParameter("Prod_Name"));
+			session.setAttribute("Prod_Description", request.getParameter("Prod_Description"));
+			session.setAttribute("Prod_Price", request.getParameter("Prod_Price"));
+			session.setAttribute("Category_Name", request.getParameter("Category_Name"));
+			session.setAttribute("Item_Condition_ID", request.getParameter("Item_Condition_ID"));
+			session.setAttribute("Loc_ID", request.getParameter("Loc_ID"));
+			//String filePath = folderName + File.separator + fileName;
+			String filePath = folderName + "/" + fileName;
+			session.setAttribute("filePath", filePath);
+		
+			request.getRequestDispatcher("AdDetails.jsp").forward(request, response);
+
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+	}
+
+	private String extractFileName(Part part) {
+		String contentDisp = part.getHeader("content-disposition");
+		String[] items = contentDisp.split(";");
+		for (String s : items) {
+			if (s.trim().startsWith("filename")) {
+				return s.substring(s.indexOf("=") + 2, s.length() - 1);
+			}
+		}
+		return "";
+
+	}
+}
