@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,9 +14,7 @@
 <title>Please enter AD details</title>
 </head>
 <body style="background-color: powderblue;">
-	<% 
-	response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-%>
+
 	<h1 style="text-align: center; font-family: Candara; background-color: white;">VirtualMart</h1>
 	<form action="LogOut" method="post" style="text-align: right">
 		<br> <input type="submit" name="Logout" value="Logout">
@@ -34,18 +33,12 @@
 			<label for="product_price">Enter Product Price: </label> <input
 				type="number" name="Prod_Price" class="form-control"><br>
 		</div>
-		<div class="container" style="padding-top: 1px">
-			<label for="category_name">Select the Category: </label> <select
-				name="Category_Name" class="form-control" >
-				<option value="category">Choose</option>
-				<option value="automobiles_bikes">automobiles bikes</option>
-				<option value="electronics">electronics</option>
-				<option value="real estate">real estate</option>
-				<option value="furniture">furniture</option>
-				<option value="books">books</option>
-				<option value="others">others</option>
-			</select><br>
-		</div>
+		 Select a Category:&nbsp;
+    <select name="Category_Name">
+       <c:forEach items="${listCategory}" var="category">
+            <option value="${category.category_Name}">"${category.category_Name}"</option>
+             </c:forEach>
+    </select>
 		<div class="container" style="padding-top: 1px">
 			<label for="location">Enter location</label> <select
 				name="Loc_ID" class="form-control">
